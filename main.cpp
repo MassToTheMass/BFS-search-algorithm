@@ -1,7 +1,6 @@
 #include "mazeSolverGuy.hpp"
 
 void solveMazeBFS(int (&arr)[n][m]);
-void initMazeSolver()
 
 int main() {
 
@@ -13,7 +12,9 @@ int main() {
         {1, 1, 1, 1, 0}
     }; 
 
-    solveMazeBFS(maze1);
+    MazeSolverGuy maze1_solver(maze1);
+
+    maze1_solver.solveMazeBFS();
 
 
     return 0;
