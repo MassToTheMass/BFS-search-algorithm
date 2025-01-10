@@ -13,7 +13,7 @@ class MazeSolverGuy {
         std::queue<std::pair<int, int>> maze_location_queue;
         std::pair<int, int> current_position = {0, 0};
         int (&maze)[n][m];
-        std::set<std::pair<int, int>> visited_locations;
+        std::stack<std::pair<int, int>> visited_locations;
         std::pair<int, int> maze_end_location;
 
         int (&visual_maze)[n][m];
@@ -34,8 +34,8 @@ class MazeSolverGuy {
             std::set<std::pair<int, int>>::iterator first = orthogonal_locations.begin();
             std::set<std::pair<int, int>>::iterator last = orthogonal_locations.end();
 
-            std::set<std::pair<int, int>>::iterator first_visited = visited_locations.begin();
-            std::set<std::pair<int, int>>::iterator last_visited = visited_locations.end();
+            std::stack<std::pair<int, int>>::iterator first_visited = visited_locations.begin();
+            std::stack<std::pair<int, int>>::iterator last_visited = visited_locations.end();
 
             while (first != last) {
 
