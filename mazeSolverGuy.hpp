@@ -23,7 +23,6 @@ class MazeSolverGuy {
             int locations_end = visited_locations.size() - 1;
 
             visual_maze[current_position.first][current_position.second] = 8;
-            visual_maze[visited_locations.at(locations_end).first][visited_locations.at(locations_end).second];
 
         }
 
@@ -44,10 +43,26 @@ class MazeSolverGuy {
 
             while (first != last) {
 
+                std::pair<int, int> pair = *first;
+
+                std::cout << "pair in question: " << pair.first << " : " << pair.second << std::endl;
+                std::cout << "indexing what?" << maze[pair.first][pair.second] << std::endl;
+                std::cout << "maze[pair.first][pair.second] <= -1: " << (maze[pair.first][pair.second] <= -1) << std::endl;
+                std::cout << "maze[pair.first][pair.second] >= 1: " << (maze[pair.first][pair.second] >= 1) << std::endl;
+
+
+                if ((maze[pair.first][pair.second] <= -1 || maze[pair.first][pair.second] >= 1)) {
+
+                    std::cout << "Pair not allowed" << std::endl;
+                    orthogonal_locations.erase(*first);
+
+                }
+
                 while (first_visited != last_visited) {
 
-                    if (*first == *first_visited) {
-                        
+                    if (pair == *first_visited) {
+
+                        std::cout << "Pair already visited" << std::endl;
                         orthogonal_locations.erase(*first);
                         break;
                     }
@@ -56,8 +71,26 @@ class MazeSolverGuy {
                     ++first_visited;
                 }
 
+
                 first_visited = visited_locations.begin();
+
+
+
+
+                
+
+
+
+
+
+
+
+
+
+                // These lines might need to be moved ie. when we rtemove something we also are iterating so it can be tricky.
+                last = orthogonal_locations.end();
                 ++first;
+
             }
 
             first = orthogonal_locations.begin();
@@ -94,26 +127,31 @@ class MazeSolverGuy {
 
         void solveMazeBFS() {
 
+            while (!maze_location_queue.empty() && current_position != maze_end_location) {
+
+                std::cout << "Top of Queue:" << maze_location_queue.front().first << " : " << maze_location_queue.front().second << std::endl;
+                std::cout << "Current Location:" << current_position.first << " : " << current_position.second << std::endl;
+                std::cout << "End Location:" << maze_end_location.first << " : " << maze_end_location.second << std::endl;
+                
+                current_position = maze_location_queue.front();
+                maze_location_queue.pop();
+
+                checkOrthogonal();
+                visited_locations.push_back(current_position);
+
+                updateVisualMaze();
+                std::cout << getMazeString();
+
+            }
+
             if (maze_location_queue.empty()) {
                 std::cout << "Maze could not be solved.\n";
                 return;
             }
 
-            current_position = maze_location_queue.front();
-            maze_location_queue.pop();
-
             if (current_position == maze_end_location) {
                 std::cout << "Maze Solved!" << std::endl;
                 return;
             }
-
-            checkOrthogonal();
-            maze_location_queue.pop();
-            current_position = maze_location_queue.front();
-            visited_locations.push_back(maze_location_queue.front());
-            updateVisualMaze();
-            std::cout << getMazeString();
-            solveMazeBFS();
-
         }
 };
