@@ -20,7 +20,7 @@ class MazeSolverGuy {
 
         void updateVisualMaze() {
 
-            int locations_end = visited_locations.size() -1;
+            int locations_end = visited_locations.size() - 1;
 
             visual_maze[current_position.first][current_position.second] = 8;
             visual_maze[visited_locations.at(locations_end).first][visited_locations.at(locations_end).second];
@@ -64,7 +64,9 @@ class MazeSolverGuy {
             last = orthogonal_locations.end();
 
             while (first != last) {
-                maze_location_queue.push({*first});
+                maze_location_queue.push(*first);
+
+                ++first;
             }
         }
 
@@ -72,13 +74,13 @@ class MazeSolverGuy {
 
             std::string current_string = "====================================\n";
 
-            for (int i = 0; i < sizeof(visual_maze); i++) {
-                for (int j = 0; j < sizeof(visual_maze[0]); j++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
 
                     current_string += std::to_string(visual_maze[i][j]) + " ";
 
                 }
-                current_string += "\n";
+                current_string += " \n";
             }
 
             return current_string;
@@ -92,16 +94,26 @@ class MazeSolverGuy {
 
         void solveMazeBFS() {
 
-            if (maze_location_queue.front() == maze_location_queue.back()) {
-                if (current_position != maze_end_location) {
-                    checkOrthogonal();
-                    maze_location_queue.pop();
-                    current_position = maze_location_queue.front();
-                    std::cout << getMazeString();
-                    solveMazeBFS();
-                } else {
-                    std::cout << "Maze Solved!" << std::endl;
-                }
+            if (maze_location_queue.empty()) {
+                std::cout << "Maze could not be solved.\n";
+                return;
             }
+
+            current_position = maze_location_queue.front();
+            maze_location_queue.pop();
+
+            if (current_position == maze_end_location) {
+                std::cout << "Maze Solved!" << std::endl;
+                return;
+            }
+
+            checkOrthogonal();
+            maze_location_queue.pop();
+            current_position = maze_location_queue.front();
+            visited_locations.push_back(maze_location_queue.front());
+            updateVisualMaze();
+            std::cout << getMazeString();
+            solveMazeBFS();
+
         }
 };

@@ -14,6 +14,5 @@ int main() {
 
     maze1_solver.solveMazeBFS();
 
-
     return 0;
 }
