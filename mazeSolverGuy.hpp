@@ -1,4 +1,5 @@
 #include <queue>
+#include <set>
 #pragma once
 #include <iostream>
 
@@ -12,21 +13,45 @@ class MazeSolverGuy {
         std::set<std::pair<int, int>> visited_locations;
 
         void checkOrthogonal() {
-            if (!maze[current_location.first][current_location.second + 1]) {
-                maze_location_queue.push({current_location.first, current_location.second + 1});
+
+            std::set<std::pair<int, int>> orthogonal_locations = {
+                {current_position.first, current_position.second + 1},
+                {current_position.first, current_position.second - 1},
+                {current_position.first + 1, current_position.second},
+                {current_position.first - 1, current_position.second}
+            };
+
+            std::set<std::pair<int, int>>::iterator first = orthogonal_locations.begin();
+            std::set<std::pair<int, int>>::iterator last = orthogonal_locations.end();
+
+            std::set<std::pair<int, int>>::iterator first_visited = visited_locations.begin();
+            std::set<std::pair<int, int>>::iterator last_visited = visited_locations.end();
+
+            while (first != last) {
+
+                while (first_visited != last_visited) {
+
+                    if ({first.first, first.second} == {first_visited.first, first_visited.second}) {
+                        
+                        visited_locations.erase({first_visited.first, first_visited.second});
+                        break;
+                    }
+
+
+                    ++first_visited;
+                }
+
+                first_visited = visited_locations.begin();
+                ++first;
             }
-            if (!maze[current_location.first][current_location.second - 1]) {
-                maze_location_queue.push({current_location.first, current_location.second - 1});
+
+            first = orthogonal_locations.begin();
+            last = orthogonal_locations.end();
+
+            while (first != last) {
+                maze_location_queue.push({first.first, first.second});
             }
-            if (!maze[current_location.first + 1][current_location.second]) {
-                maze_location_queue.push({current_location.first + 1, current_location.second});
-            }
-            if (!maze[current_location.first - 1][current_location.second]) {
-                maze_location_queue.push({current_location.first - 1, current_location.second});
-            }
-            std::cout << maze_location_queue.front().first << " " << maze_location_queue.front().second << std::endl;
         }
-        
 
     public:
         MazeSolverGuy(int (&maze)[n][m]) : maze(maze) {
@@ -41,6 +66,7 @@ class MazeSolverGuy {
                     checkOrthogonal();
                     maze_location_queue.pop();
                     current_location = maze_location_queue.front();
+                    solveMazeBFS();
                 } else {
                     std::cout << "Maze Solved!" << std::endl;
                 }
