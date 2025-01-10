@@ -1,7 +1,10 @@
 #include <queue>
 #include <set>
-#pragma once
 #include <iostream>
+#include <string>
+#include <stack>
+#pragma once
+
 
 template<size_t n, size_t m>
 class MazeSolverGuy {
@@ -11,6 +14,13 @@ class MazeSolverGuy {
         std::pair<int, int> current_position = {0, 0};
         int (&maze)[n][m];
         std::set<std::pair<int, int>> visited_locations;
+        std::pair<int, int> maze_end_location;
+
+        int (&visual_maze)[n][m];
+
+        void updateVisualMaze() {
+
+        }
 
         void checkOrthogonal() {
 
@@ -31,9 +41,9 @@ class MazeSolverGuy {
 
                 while (first_visited != last_visited) {
 
-                    if ({first.first, first.second} == {first_visited.first, first_visited.second}) {
+                    if (*first == *first_visited) {
                         
-                        visited_locations.erase({first_visited.first, first_visited.second});
+                        visited_locations.erase(*first);
                         break;
                     }
 
@@ -49,8 +59,12 @@ class MazeSolverGuy {
             last = orthogonal_locations.end();
 
             while (first != last) {
-                maze_location_queue.push({first.first, first.second});
+                maze_location_queue.push({*first});
             }
+        }
+
+        friend std::ostream& <<(std::ostream& os, (arr&)[n][m]) {
+
         }
 
     public:
@@ -62,15 +76,14 @@ class MazeSolverGuy {
         void solveMazeBFS() {
 
             if (maze_location_queue.front() == maze_location_queue.back()) {
-                if (current_location != maze_end_location) {
+                if (current_position != maze_end_location) {
                     checkOrthogonal();
                     maze_location_queue.pop();
-                    current_location = maze_location_queue.front();
+                    current_position = maze_location_queue.front();
                     solveMazeBFS();
                 } else {
                     std::cout << "Maze Solved!" << std::endl;
                 }
             }
         }
-
 };
