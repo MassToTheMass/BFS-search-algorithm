@@ -1,4 +1,6 @@
 {
+    "editor.inlineSuggest.enabled": false,
+    "memory_resource": "cpp",
     "files.associations": {
         "array": "cpp",
         "atomic": "cpp",
@@ -22,7 +24,6 @@
         "functional": "cpp",
         "iterator": "cpp",
         "memory": "cpp",
-        "memory_resource": "cpp",
         "numeric": "cpp",
         "optional": "cpp",
         "random": "cpp",
@@ -44,6 +45,8 @@
         "streambuf": "cpp",
         "typeinfo": "cpp",
         "iostream": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "memory_resource": "cpp"
     }
+    
 }

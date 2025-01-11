@@ -2,7 +2,6 @@
 #include <set>
 #include <iostream>
 #include <string>
-#include <vector>
 #pragma once
 
 
@@ -13,15 +12,23 @@ class MazeSolverGuy {
         std::queue<std::pair<int, int>> maze_location_queue;
         std::pair<int, int> current_position = {0, 0};
         int (&maze)[n][m];
-        std::vector<std::pair<int, int>> visited_locations;
+        std::set<std::pair<int, int>> visited_locations;
         std::pair<int, int> maze_end_location;
 
         int (&visual_maze)[n][m];
 
+        void debugMessage() {
+            
+            std::cout << "Top of Queue:" << maze_location_queue.front().first << " : " << maze_location_queue.front().second << std::endl;
+            std::cout << "Current Location:" << current_position.first << " : " << current_position.second << std::endl;
+            std::cout << "End Location:" << maze_end_location.first << " : " << maze_end_location.second << std::endl;
+        }
+
         void updateVisualMaze() {
 
-            int locations_end = visited_locations.size() - 1;
-
+            for (const auto& pair : visited_locations) {
+                visual_maze[pair.first][pair.second] = 7;
+            }
             visual_maze[current_position.first][current_position.second] = 8;
 
         }
@@ -35,71 +42,43 @@ class MazeSolverGuy {
                 {current_position.first - 1, current_position.second}
             };
 
-            std::set<std::pair<int, int>>::iterator first = orthogonal_locations.begin();
-            std::set<std::pair<int, int>>::iterator last = orthogonal_locations.end();
+            std::set<std::pair<int, int>> locations_to_remove;
 
-            std::vector<std::pair<int, int>>::iterator first_visited = visited_locations.begin();
-            std::vector<std::pair<int, int>>::iterator last_visited = visited_locations.end();
+            for (const auto& pair : orthogonal_locations) {
 
-            while (first != last) {
-
-                std::pair<int, int> pair = *first;
-
-                std::cout << "pair in question: " << pair.first << " : " << pair.second << std::endl;
-                std::cout << "indexing what?" << maze[pair.first][pair.second] << std::endl;
-                std::cout << "maze[pair.first][pair.second] <= -1: " << (maze[pair.first][pair.second] <= -1) << std::endl;
-                std::cout << "maze[pair.first][pair.second] >= 1: " << (maze[pair.first][pair.second] >= 1) << std::endl;
-
-
-                if ((maze[pair.first][pair.second] <= -1 || maze[pair.first][pair.second] >= 1)) {
-
-                    std::cout << "Pair not allowed" << std::endl;
-                    orthogonal_locations.erase(*first);
-
-                }
-
-                while (first_visited != last_visited) {
-
-                    if (pair == *first_visited) {
-
-                        std::cout << "Pair already visited" << std::endl;
-                        orthogonal_locations.erase(*first);
-                        break;
-                    }
-
-
-                    ++first_visited;
-                }
-
-
-                first_visited = visited_locations.begin();
-
-
-
+                std::cout << "pair in question:: " << pair.first << ":" << pair.second << std::endl;
+                std::cout << "pair.first < 0:      " << (pair.first < 0) << std::endl;
+                std::cout << "pair.second < 0:      " << (pair.second < 0) << std::endl;
+                std::cout << "pair.first > n:      " << (pair.first > n) << std::endl;
+                std::cout << "pair.second > m:      " << (pair.first > n) << std::endl;
+                std::cout << "!maze[pair.first][pair.second]:      " << (!maze[pair.first][pair.second]) << std::endl;
 
                 
 
+                if ((pair.first < 0 || pair.second < 0 || pair.first > n || pair.second > m) || maze[pair.first][pair.second]) {
 
+                    locations_to_remove.insert(pair);
+                }
 
+                for (const auto& visited_pair : visited_locations) {
 
+                    if (pair == visited_pair) {
 
-
-
-
-
-                // These lines might need to be moved ie. when we rtemove something we also are iterating so it can be tricky.
-                last = orthogonal_locations.end();
-                ++first;
-
+                        locations_to_remove.insert(pair);
+                        break;
+                    }
+                }
             }
 
-            first = orthogonal_locations.begin();
-            last = orthogonal_locations.end();
+            for (const auto& pair : locations_to_remove) {
+                orthogonal_locations.erase(pair);
+            }
 
-            while (first != last) {
-                maze_location_queue.push(*first);
+            for (const auto& pair : orthogonal_locations) {
 
-                ++first;
+                std::cout << "Added Pair: " << pair.first << ":" << pair.second << std::endl;
+
+                maze_location_queue.push(pair);
             }
         }
 
@@ -129,15 +108,13 @@ class MazeSolverGuy {
 
             while (!maze_location_queue.empty() && current_position != maze_end_location) {
 
-                std::cout << "Top of Queue:" << maze_location_queue.front().first << " : " << maze_location_queue.front().second << std::endl;
-                std::cout << "Current Location:" << current_position.first << " : " << current_position.second << std::endl;
-                std::cout << "End Location:" << maze_end_location.first << " : " << maze_end_location.second << std::endl;
+                debugMessage();
                 
                 current_position = maze_location_queue.front();
                 maze_location_queue.pop();
 
                 checkOrthogonal();
-                visited_locations.push_back(current_position);
+                visited_locations.insert(current_position);
 
                 updateVisualMaze();
                 std::cout << getMazeString();
