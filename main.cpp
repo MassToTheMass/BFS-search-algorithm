@@ -37,10 +37,10 @@ int main() {
 
 
     MazeSolverGuy<5, 5> maze1_solver(maze1);
-    MazeSolverGuy<19, 25> maze2_solver(maze2);
+    // MazeSolverGuy<19, 25> maze2_solver(maze2);
 
     maze1_solver.solveMazeBFS();
-    maze2_solver.solveMazeBFS();
+    // maze2_solver.solveMazeBFS();
 
     return 0;
 }
